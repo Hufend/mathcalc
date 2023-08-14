@@ -1,0 +1,13 @@
+# mathcalc 文件格式规范
+---
+# 我们使用 C, 不使用 C++
+Language: Cpp
+BasedOnStyle: LLVM
+ColumnLimit: 100
+IndentWidth: 4
+IndentCaseLabels: true
+# 我们使用 `tab` 来缩进
+UseTab: ForIndentation
+TabWidth: 4
+AllowShortFunctionsOnASingleLine: Empty
+...

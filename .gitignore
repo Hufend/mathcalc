@@ -1,0 +1,22 @@
+# 临时缓存目录
+tmp/
+
+# 工作空间目录
+build/
+.workspace/
+.vscode/
+.idea/
+
+# 临时缓存文件
+*.tmp
+*.log
+
+# 目标文件
+*.o
+*.elf
+*.out
+*.run
+*.exe
+*.so
+*.dll
+*.a
