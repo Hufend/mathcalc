@@ -1,5 +1,15 @@
 # mathcalc
 
+	                |    |                 |      
+	   ` \    _` |   _|    \    _|   _` |  |   _| 
+	 _|_|_| \__,_| \__| _| _| \__| \__,_| _| \__| 
+
+[GNU General Public License Version 3](../../LICENSE.md)
+
+![Programming Language](https://img.shields.io/badge/Language-C-red)
+[![License](https://img.shields.io/badge/License-GNU_GPL_v3-green)](../../LICENSE.md)
+![Version](https://img.shields.io/badge/Version-_1.0-blue)
+
 介绍
 ---------
 
