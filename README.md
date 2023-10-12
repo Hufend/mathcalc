@@ -4,7 +4,7 @@
 	   ` \    _` |   _|    \    _|   _` |  |   _| 
 	 _|_|_| \__,_| \__| _| _| \__| \__,_| _| \__| 
 
-[GNU General Public License Version 3](../../LICENSE.md)
+[GNU General Public License Version 3](LICENSE.md)
 
 ![Programming Language](https://img.shields.io/badge/Language-C-red)
 [![License](https://img.shields.io/badge/License-GNU_GPL_v3-green)](../../LICENSE.md)
@@ -34,27 +34,25 @@
 
 安装 mathcalc 通常有 2 个办法
 
-1. [构建源码](doc/build.md)
-2. [下载发行的软件包](doc/source.md)
+1. [构建源码](docs/build.md)
+2. [下载发行的软件包](docs/source.md)
 
 用法
 ---------
 
-mathcalc 非常易用, 真的 ~~, 毕竟它只支持四则运算~~
+mathcalc 非常易用~~, 毕竟它只支持四则运算~~
 
 当你运行 mathcalc 的时候, 它会等待你的输入 ~~, 不必惊慌, 它没有卡死~~
 
-	$ ./mathcalc
+	$ ./simp_mathcalc
 	1/7=
 	0.142857
 
-此时你可以输入算式以计算  
-这里的 `1/7=` 是用户输入
+此时你可以输入算式以计算 这里的 `1/7=` 是用户输入
 
-mathcalc 在处理用户输入时会忽略空白字符  
-即 `\s` / `\t` / `\n` / `\r`
+mathcalc 在处理用户输入时会忽略空白字符 即 `\s` / `\t` / `\n` / `\r`
 
-实例如下
+以下为实例
 
 	5 /      7     =
 	0.714286
@@ -74,7 +72,7 @@ mathcalc 在处理用户输入时会忽略空白字符
 本项目目前只有一名维护者  
 如果有问题可以与我联系 ~~, 但并不是那么及时~~  
 
-<mailto:cmlcreator@126.com>  
+Email: <mailto:macrohard@yeah.com>  
 QQ: 1245407374
 
 当然也可以提 issue
