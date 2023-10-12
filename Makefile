@@ -1,31 +1,31 @@
-# 变量定义
 BUILD_DIR ?= build
-SRC_LIST := $(patsubst %, $(BUILD_DIR)/src/%.o, mathcalc)
+MOD_LIST := $(patsubst %, $(BUILD_DIR)/src/%.o, simp_mathcalc)
 CC ?= gcc
+CFLAGS ?= -O1
 
-.SECONDARY: $(SRC_LIST)
+.SECONDARY: $(MOD_LIST)
 
-.PHONY: clean configure
+.PHONY: clean init
 
-all: configure $(BUILD_DIR)/mathcalc
-	$(info Done)
+all: init $(BUILD_DIR)/simp_mathcalc
+	$(info Done!)
 
 # 清理中间文件
 clean:
-	$(info Cleaning up project)
+	$(info Cleaning up...)
 	@rm -r $(BUILD_DIR)/src
 
-# 配置
-configure:
-	$(info Configuring)
+# 初始化
+init:
+	$(info Initializing...)
 	@mkdir -p $(BUILD_DIR) $(BUILD_DIR)/src
 
-# 链接 mathcalc
-$(BUILD_DIR)/mathcalc: $(SRC_LIST)
+# 链接 simple mathcalc
+$(BUILD_DIR)/simp_mathcalc: $(MOD_LIST)
 	$(info Linking $< to $@)
 	@$(CC) -o $@ $<
 
 # 编译源码
 $(BUILD_DIR)/src/%.o: src/%.c
 	$(info Compiling $< to $@)
-	@$(CC) -c -O1 -o $@ $<
+	@$(CC) -c $(CFLAGS) -o $@ $<
