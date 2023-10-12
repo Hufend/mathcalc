@@ -1,4 +1,7 @@
 /*
+ * 这是一个简单的计算器实现
+ * 通常不做修改
+ *
  * $ ./mathcalc
  * 1/7
  * 0.142857
@@ -63,8 +66,8 @@ double calculation() {
 	// 计算结果
 	double result = 0;
 	double number;
-	double buffer1;
-	double buffer2;
+	double buffer_plus_minus;
+	int operator_buffer;
 	// IO 交互
 start:
 	printf("\033[0m");
@@ -83,31 +86,31 @@ start:
 		goto start;
 	}
 loop:
-	register int operator= fgetc(source);
-	switch (operator) {
+	operator_buffer = fgetc(source);
+	switch (operator_buffer) {
 		case '+':
 			mode[0] = 1;
 			if (!fscanf(source, "%lf", &number))
 				goto exception;
-			internal_add(&result, &number, &buffer1, mode);
+			internal_add(&result, &number, &buffer_plus_minus, mode);
 			break;
 		case '-':
 			mode[0] = 2;
 			if (!fscanf(source, "%lf", &number))
 				goto exception;
-			internal_subtract(&result, &number, &buffer1, mode);
+			internal_subtract(&result, &number, &buffer_plus_minus, mode);
 			break;
 		case '*':
 			mode[0] = 3;
 			if (!fscanf(source, "%lf", &number))
 				goto exception;
-			internal_multiply(&result, &number, &buffer1, mode);
+			internal_multiply(&result, &number, &buffer_plus_minus, mode);
 			break;
 		case '/':
 			mode[0] = 4;
 			if (!fscanf(source, "%lf", &number))
 				goto exception;
-			if (internal_divide(&result, &number, &buffer1, mode) == EXIT_FAILURE) {
+			if (internal_divide(&result, &number, &buffer_plus_minus, mode) == EXIT_FAILURE) {
 				fprintf(stderr, "\033[0m\033[1m\033[31mMath error: The denominator cannot be 0\n");
 				scanf("%*[^\n]%*c");
 				goto start;
@@ -126,7 +129,7 @@ loop:
 		case '}':
 			return result;
 		default:
-			printf("\033[0m\033[1m\033[31mUnknown operator: %c\n", operator);
+			printf("\033[0m\033[1m\033[31mUnknown operator: %c\n", operator_buffer);
 	}
 	goto loop;
 exception:
@@ -137,16 +140,16 @@ exception:
 			number = calculation();
 			switch (mode[0]) {
 				case 1:
-					internal_add(&result, &number, &buffer1, mode);
+					internal_add(&result, &number, &buffer_plus_minus, mode);
 					break;
 				case 2:
-					internal_subtract(&result, &number, &buffer1, mode);
+					internal_subtract(&result, &number, &buffer_plus_minus, mode);
 					break;
 				case 3:
-					internal_multiply(&result, &number, &buffer1, mode);
+					internal_multiply(&result, &number, &buffer_plus_minus, mode);
 					break;
 				case 4:
-					if (internal_divide(&result, &number, &buffer1, mode) == EXIT_FAILURE) {
+					if (internal_divide(&result, &number, &buffer_plus_minus, mode) == EXIT_FAILURE) {
 						fprintf(stderr,
 						        "\033[0m\033[1m\033[31mMath error: the denominator cannot be 0\n");
 						scanf("%*[^\n]%*c");
