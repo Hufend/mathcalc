@@ -1,5 +1,6 @@
 BUILD_DIR ?= build
 MOD_LIST := $(patsubst %, $(BUILD_DIR)/src/%.o, simp_mathcalc)
+VERSION := 1.0.1
 CC ?= gcc
 CFLAGS ?= -O1
 

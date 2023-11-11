@@ -1,8 +1,7 @@
 ### mathcalc ###
 # Workspace directories
 build/
-.workspace/
-.vscode/
+.*/
 
 ### C ###
 # Prerequisites
