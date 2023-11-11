@@ -3,117 +3,112 @@
  * 通常不做修改
  *
  * $ ./mathcalc
- * 1/7
+ * Type a mathematical equation
+ * 1/7=
  * 0.142857
  */
+#include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#define COLORLESS "\033[0m"
+#define COLOR_ERROR "\033[1m\033[31m"
 // 文件输入流
-FILE *source = NULL;
+FILE *fd = NULL;
 // 计算流程
 double calculation();
 // 加法
-void internal_add(double *result, double *number, double *buffer, uint8_t *mode) {
+void internal_add(double *result, double *num, double *buf, uint8_t *mode) {
 	mode[1] = 1;
 	mode[2] = 1;
-	*result += *number;
-	*buffer = *number;
+	*result += *num;
+	*buf = *num;
 }
 // 减法
-void internal_subtract(double *result, double *number, double *buffer, uint8_t *mode) {
+void internal_subtract(double *result, double *num, double *buf, uint8_t *mode) {
 	mode[1] = 1;
 	mode[2] = 0;
-	*result -= *number;
-	*buffer = *number;
+	*result -= *num;
+	*buf = *num;
 }
 // 乘法
-void internal_multiply(double *result, double *number, double *buffer, uint8_t *mode) {
+void internal_multiply(double *result, double *num, double *buf, uint8_t *mode) {
 	if (mode[1] != 0) {
 		if (mode[2] != 0)
-			*result -= *buffer;
+			*result -= *buf;
 		else
-			*result += *buffer;
-		*buffer *= *number;
+			*result += *buf;
+		*buf *= *num;
 		if (mode[2] != 0)
-			*result += *buffer;
+			*result += *buf;
 		else
-			*result -= *buffer;
+			*result -= *buf;
 	} else
-		*result *= *number;
+		*result *= *num;
 }
 // 除法
-int internal_divide(double *result, double *number, double *buffer, uint8_t *mode) {
-	if (*number == 0)
+int internal_divide(double *result, double *num, double *buf, uint8_t *mode) {
+	if (*num == 0)
 		return EXIT_FAILURE;
 	if (mode[1] != 0) {
 		if (mode[2] != 0)
-			*result -= *buffer;
+			*result -= *buf;
 		else
-			*result += *buffer;
-		*buffer /= *number;
+			*result += *buf;
+		*buf /= *num;
 		if (mode[2] != 0)
-			*result += *buffer;
+			*result += *buf;
 		else
-			*result -= *buffer;
+			*result -= *buf;
 	} else
-		*result /= *number;
+		*result /= *num;
 	return EXIT_SUCCESS;
 }
 double calculation() {
-	// 计算模式
 	uint8_t mode[3] = {0 /*运算模式*/, 0 /*是否经过加减运算*/, 0 /*加减运算区分*/};
-	// 计算结果
 	double result = 0;
-	double number;
-	double buffer_plus_minus;
-	int operator_buffer;
+	double num;
+	double buf_plus_minus;
+	int char_buf;
 	// IO 交互
-start:
-	printf("\033[0m");
-	if (!fscanf(source, "%lf", &result)) {
-		switch (fgetc(source)) {
+	if (!fscanf(fd, "%lf", &result))
+		switch (fgetc(fd)) {
 			case 'q':
 			case 'e':
-			case EOF:
 				exit(EXIT_SUCCESS);
-			case 'h':
-				printf("Type a mathematical formula\n");
-				break;
 			default:
 				goto exception;
 		}
-		goto start;
-	}
 loop:
-	operator_buffer = fgetc(source);
-	switch (operator_buffer) {
+	char_buf = fgetc(fd);
+	switch (char_buf) {
 		case '+':
 			mode[0] = 1;
-			if (!fscanf(source, "%lf", &number))
+			if (!fscanf(fd, "%lf", &num))
 				goto exception;
-			internal_add(&result, &number, &buffer_plus_minus, mode);
+			internal_add(&result, &num, &buf_plus_minus, mode);
 			break;
 		case '-':
 			mode[0] = 2;
-			if (!fscanf(source, "%lf", &number))
+			if (!fscanf(fd, "%lf", &num))
 				goto exception;
-			internal_subtract(&result, &number, &buffer_plus_minus, mode);
+			internal_subtract(&result, &num, &buf_plus_minus, mode);
 			break;
 		case '*':
 			mode[0] = 3;
-			if (!fscanf(source, "%lf", &number))
+			if (!fscanf(fd, "%lf", &num))
 				goto exception;
-			internal_multiply(&result, &number, &buffer_plus_minus, mode);
+			internal_multiply(&result, &num, &buf_plus_minus, mode);
 			break;
 		case '/':
 			mode[0] = 4;
-			if (!fscanf(source, "%lf", &number))
+			if (!fscanf(fd, "%lf", &num))
 				goto exception;
-			if (internal_divide(&result, &number, &buffer_plus_minus, mode) == EXIT_FAILURE) {
-				fprintf(stderr, "\033[0m\033[1m\033[31mMath error: The denominator cannot be 0\n");
-				scanf("%*[^\n]%*c");
-				goto start;
+			if (internal_divide(&result, &num, &buf_plus_minus, mode) == EXIT_FAILURE) {
+				printf(COLOR_ERROR "Math error: the denominator cannot be 0" COLORLESS "\n");
+				if (scanf("%*[^\n]%*c") == EOF)
+					exit(EXIT_FAILURE);
+				return NAN;
 			}
 			break;
 		case ' ':
@@ -121,61 +116,62 @@ loop:
 		case '\r':
 		case '\n':
 			goto loop;
-		case EOF:
-			exit(EXIT_SUCCESS);
 		case '=':
 		case ')':
 		case ']':
 		case '}':
 			return result;
 		default:
-			printf("\033[0m\033[1m\033[31mUnknown operator: %c\n", operator_buffer);
+			printf(COLOR_ERROR "Unknown operator: %c" COLORLESS "\n", char_buf);
 	}
 	goto loop;
 exception:
-	switch (fgetc(source)) {
+	switch (fgetc(fd)) {
 		case '(':
 		case '[':
 		case '{':
-			number = calculation();
+			num = calculation();
 			switch (mode[0]) {
 				case 1:
-					internal_add(&result, &number, &buffer_plus_minus, mode);
+					internal_add(&result, &num, &buf_plus_minus, mode);
 					break;
 				case 2:
-					internal_subtract(&result, &number, &buffer_plus_minus, mode);
+					internal_subtract(&result, &num, &buf_plus_minus, mode);
 					break;
 				case 3:
-					internal_multiply(&result, &number, &buffer_plus_minus, mode);
+					internal_multiply(&result, &num, &buf_plus_minus, mode);
 					break;
 				case 4:
-					if (internal_divide(&result, &number, &buffer_plus_minus, mode) == EXIT_FAILURE) {
-						fprintf(stderr,
-						        "\033[0m\033[1m\033[31mMath error: the denominator cannot be 0\n");
-						scanf("%*[^\n]%*c");
-						goto start;
+					if (internal_divide(&result, &num, &buf_plus_minus, mode) == EXIT_FAILURE) {
+						printf(COLOR_ERROR "Math error: the denominator cannot be 0" COLORLESS
+						                   "\n");
+						if (scanf("%*[^\n]%*c") == EOF)
+							exit(EXIT_FAILURE);
+						return NAN;
 					}
 					break;
 				default:
-					printf("\033[0m\033[1m\033[31mProgram error: Memory exception\n");
+					fprintf(stderr, COLOR_ERROR
+					        "Fatal error: memory exception, no longer secure" COLORLESS "\n");
 					exit(EXIT_FAILURE);
 			}
 			goto loop;
 		default:
-			fprintf(stderr, "\033[0m\033[1m\033[31mMath error: NaN\n");
-			scanf("%*[^\n]%*c");
+			printf(COLOR_ERROR "Math error: not a number" COLORLESS "\n");
+			if (scanf("%*[^\n]%*c") == EOF)
+				exit(EXIT_FAILURE);
 	}
-	goto start;
+	return NAN;
 }
 int main(int argc, char **argv) {
+	fd = stdin;
 	if (argc > 1) {
-		source = fopen(argv[1], "r");
-		if (source == NULL) {
-			perror("Status");
-			source = stdin;
-		}
-	} else
-		source = stdin;
+		FILE *buf = fopen(argv[1], "r");
+		if (buf == NULL)
+			perror("File status");
+		fd = buf;
+	}
+	printf("Type a mathematical equation\n");
 	for (;;)
 		printf("%f\n\n", calculation());
 }
