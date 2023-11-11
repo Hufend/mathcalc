@@ -6,9 +6,8 @@
 
 [GNU General Public License Version 3](LICENSE.md)
 
-![Programming Language](https://img.shields.io/badge/Language-C-red)
 [![License](https://img.shields.io/badge/License-GNU_GPL_v3-green)](../../LICENSE.md)
-![Version](https://img.shields.io/badge/Version-_1.0-blue)
+![Version](https://img.shields.io/badge/Version-_1.0.1-blue)
 
 介绍
 ---------
@@ -42,9 +41,10 @@
 
 mathcalc 非常易用~~, 毕竟它只支持四则运算~~
 
-当你运行 mathcalc 的时候, 它会等待你的输入 ~~, 不必惊慌, 它没有卡死~~
+当你运行 mathcalc 的时候, 它会提示你输入一个算式
 
 	$ ./simp_mathcalc
+	Type a mathematical equation
 	1/7=
 	0.142857
 
